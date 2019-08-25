@@ -18,6 +18,7 @@ package org.eclipse.leshan.client.californium.impl;
 import static org.eclipse.leshan.core.californium.ResponseCodeUtil.toLwM2mResponseCode;
 
 import org.eclipse.californium.core.coap.Response;
+import org.eclipse.leshan.core.request.AlarmRequest;
 import org.eclipse.leshan.core.request.BootstrapRequest;
 import org.eclipse.leshan.core.request.DeregisterRequest;
 import org.eclipse.leshan.core.request.LwM2mRequest;
@@ -39,6 +40,10 @@ public class LwM2mClientResponseBuilder<T extends LwM2mResponse> implements Upli
 
     public LwM2mClientResponseBuilder(Response coapResponse) {
         this.coapResponse = coapResponse;
+    }
+
+    @Override
+    public void visit(AlarmRequest request) {
     }
 
     @Override

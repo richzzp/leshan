@@ -58,13 +58,14 @@ public class LeshanClientDemo {
 
     private static final Logger LOG = LoggerFactory.getLogger(LeshanClientDemo.class);
 
-    private final static String[] modelPaths = new String[] { "3303.xml" };
+    private final static String[] modelPaths = new String[] { "3303.xml", "alarm.xml" };
 
     private static final int OBJECT_ID_TEMPERATURE_SENSOR = 3303;
     private final static String DEFAULT_ENDPOINT = "LeshanClientDemo";
     private final static String USAGE = "java -jar leshan-client-demo.jar [OPTION]\n\n";
 
     private static MyLocation locationInstance;
+    public static MyAlarm alarmInst;
 
     public static void main(final String[] args) {
 
@@ -318,6 +319,7 @@ public class LeshanClientDemo {
             Float latitude, Float longitude, float scaleFactor) throws CertificateEncodingException {
 
         locationInstance = new MyLocation(latitude, longitude, scaleFactor);
+        alarmInst = new MyAlarm();
 
         // Initialize model
         List<ObjectModel> models = ObjectLoader.loadDefault();
@@ -360,6 +362,7 @@ public class LeshanClientDemo {
         }
         initializer.setInstancesForObject(DEVICE, new MyDevice());
         initializer.setInstancesForObject(LOCATION, locationInstance);
+        initializer.setInstancesForObject(ALARM, alarmInst);
         initializer.setInstancesForObject(OBJECT_ID_TEMPERATURE_SENSOR, new RandomTemperatureSensor());
         List<LwM2mObjectEnabler> enablers = initializer.createAll();
 
@@ -429,13 +432,18 @@ public class LeshanClientDemo {
                 client.destroy(true); // send de-registration request before destroy
             }
         });
-
+        
         // Change the location through the Console
         try (Scanner scanner = new Scanner(System.in)) {
             while (scanner.hasNext()) {
                 String nextMove = scanner.next();
                 locationInstance.moveLocation(nextMove);
+                
+                alarmInst.SendAlarm(100);
             }
-        }
+        } catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 }

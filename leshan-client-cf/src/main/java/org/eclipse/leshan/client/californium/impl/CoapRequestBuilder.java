@@ -20,8 +20,11 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import org.eclipse.californium.core.coap.Request;
+import org.eclipse.californium.core.coap.CoAP.Code;
+import org.eclipse.californium.core.coap.CoAP.Type;
 import org.eclipse.californium.elements.AddressEndpointContext;
 import org.eclipse.leshan.Link;
+import org.eclipse.leshan.core.request.AlarmRequest;
 import org.eclipse.leshan.core.request.BindingMode;
 import org.eclipse.leshan.core.request.BootstrapRequest;
 import org.eclipse.leshan.core.request.ContentFormat;
@@ -38,6 +41,18 @@ public class CoapRequestBuilder implements UplinkRequestVisitor {
     public CoapRequestBuilder(InetSocketAddress serverAddress) {
         this.serverAddress = serverAddress;
     }
+
+    @Override
+    public void visit(AlarmRequest request) {
+        coapRequest = new Request(Code.POST, Type.NON);
+        buildRequestSettings();
+        coapRequest.getOptions().addUriPath("alarm");
+        coapRequest.getOptions().addUriQuery("ep=" + request.getEndpointName());
+
+        Link[] objectLinks = request.getObjectLinks();
+        if (objectLinks != null)
+            coapRequest.setPayload(Link.serialize(objectLinks));
+}
 
     @Override
     public void visit(BootstrapRequest request) {

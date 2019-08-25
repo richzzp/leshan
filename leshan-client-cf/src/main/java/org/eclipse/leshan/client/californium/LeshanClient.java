@@ -33,6 +33,7 @@ import org.eclipse.leshan.client.californium.impl.ObjectResource;
 import org.eclipse.leshan.client.observer.LwM2mClientObserver;
 import org.eclipse.leshan.client.observer.LwM2mClientObserverDispatcher;
 import org.eclipse.leshan.client.resource.LwM2mObjectEnabler;
+import org.eclipse.leshan.client.servers.AlarmEngine;
 import org.eclipse.leshan.client.servers.BootstrapHandler;
 import org.eclipse.leshan.client.servers.RegistrationEngine;
 import org.eclipse.leshan.core.californium.EndpointFactory;
@@ -53,11 +54,14 @@ public class LeshanClient implements LwM2mClient {
 
     private final CoapServer clientSideServer;
     private final CaliforniumLwM2mRequestSender requestSender;
+    //private final CaliforniumLwM2mRequestSender requestSender2;
     private final RegistrationEngine engine;
     private final BootstrapHandler bootstrapHandler;
     private final LwM2mClientObserverDispatcher observers;
+    public  static AlarmEngine alarmEngine;
 
     private final CaliforniumEndpointsManager endpointsManager;
+    //private final CaliforniumEndpointsManager endpointsManager2;
 
     public LeshanClient(String endpoint, InetSocketAddress localAddress,
             List<? extends LwM2mObjectEnabler> objectEnablers, NetworkConfig coapConfig, Builder dtlsConfigBuilder,
@@ -112,6 +116,12 @@ public class LeshanClient implements LwM2mClient {
         engine = new RegistrationEngine(endpoint, this.objectEnablers, endpointsManager, requestSender,
                 bootstrapHandler, observers, additionalAttributes);
 
+        // Create sender for alarm
+        // Create EndpointHandler for alarm
+        //endpointsManager2 = new CaliforniumEndpointsManager(clientSideServer, localAddress, coapConfig, dtlsConfigBuilder, endpointFactory);
+        //requestSender2 = new CaliforniumLwM2mRequestSender(endpointsManager2);
+        //alarmEngine = new AlarmEngine(endpoint, endpointsManager2, this.objectEnablers, requestSender2);
+        alarmEngine = new AlarmEngine(endpoint, endpointsManager, this.objectEnablers, requestSender);
     }
 
     @Override

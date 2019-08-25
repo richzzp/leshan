@@ -74,6 +74,9 @@ public class RegistrationEngine {
         SUCCESS, FAILURE, TIMEOUT
     }
 
+    // restore the last registered DM server
+    public static Server regServer;
+    
     // device state
     private final String endpoint;
     private final Map<String, String> additionalAttributes;
@@ -247,6 +250,9 @@ public class RegistrationEngine {
                 // Update every lifetime period
                 long delay = calculateNextUpdate(dmInfo.lifetime);
                 scheduleUpdate(server, registrationID, delay);
+                
+                // Save DM server info
+                regServer = server;
 
                 if (observer != null) {
                     observer.onRegistrationSuccess(server, registrationID);

@@ -206,6 +206,10 @@ public class LeshanServer implements LwM2mServer {
                 new RegistrationHandler(this.registrationService, authorizer, registrationIdProvider));
         coapServer.add(rdResource);
 
+        // define /alarm resource
+        AlarmResource alarmResource = new AlarmResource();
+        coapServer.add(alarmResource);
+        
         // create sender
         // notify applications of LWM2M client coming online/offline
         if (noQueueMode) {
